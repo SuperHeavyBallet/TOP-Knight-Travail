@@ -1,0 +1,26 @@
+.board-container{
+    background-color: black;
+    border: 1px solid black;
+    width: 400px;
+    height: 400px;
+}
+
+.board-row-container{
+    display: flex;
+}
+.board-square{
+    width: 50px;
+    height: 50px;
+}
+
+.white{
+    background-color: white;
+}
+
+.black{
+    background-color: black;
+}
+
+.knight{
+    background-color: red;
+}
