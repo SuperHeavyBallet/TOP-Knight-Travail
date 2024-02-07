@@ -62,5 +62,36 @@ class BoardRow
 
 }
 
+class Knight
+{
+    constructor(currentPosition)
+    {
+        this.knight = document.createElement("div");
+        this.knight.classList.add("knight");
+    }
+
+    generateKnight()
+    {
+        
+    }
+
+    moveKnight(activeRow, activeColumn)
+    {
+        const activeParentSquare = boardSquareMatrix[activeRow][activeColumn];
+        console.log(activeParentSquare);
+        activeParentSquare.appendChild(this.knight);
+        const knightMoveSet = [
+            
+        ];
+    }
+
+    
+}
+
 const newBoardRow = new BoardRow();
 console.log(boardSquareMatrix);
+
+const newKnight = new Knight();
+newKnight.moveKnight(3,3);
+
+
