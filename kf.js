@@ -26,6 +26,7 @@ const board = document.getElementById("board-container");
 const squareWhite = document.createElement("div");
 const squareBlack = document.createElement("div");
 
+
 class BoardRow
 {
     constructor()
@@ -54,6 +55,16 @@ class BoardRow
 
             boardRowContainer.appendChild(square);
             boardSquareMatrix[rowNum].push(square);
+
+            square.addEventListener("click", () =>
+            {
+                if (square.textContent === "P")
+                {
+                    console.log("Clicked: ", square);
+                    newKnight.moveKnight(rowNum, i);
+                }
+                
+            })
         }
 
         board.appendChild(boardRowContainer);
@@ -77,12 +88,64 @@ class Knight
 
     moveKnight(activeRow, activeColumn)
     {
+        this.clearPreviousMove();
+
         const activeParentSquare = boardSquareMatrix[activeRow][activeColumn];
         console.log(activeParentSquare);
         activeParentSquare.appendChild(this.knight);
-        const knightMoveSet = [
+
+        function generatePotentialMoves(row, column, symbol)
+        {
+
+                
+            const knightMoveSet = [
+                [row + 2, column + 1],
+                [row + 1, column + 2],
+                [row - 1, column + 2],
+                [row - 2, column + 1],
+                [row + 2, column - 1],
+                [row - 1, column - 2],
+                [row - 2, column - 1],
+                [row + 1, column - 2],
+                
+            ];
+
+
+            for (let i = 0; i < knightMoveSet.length; i++)
+            {
+                const move = knightMoveSet[i];
+                const newRow = move[0];
+                const newColumn = move[1];
+
+                if (newRow >= 0 && newRow < boardSquareMatrix.length &&
+            newColumn >= 0 && newColumn < boardSquareMatrix[newRow].length) {
             
-        ];
+            const potentialMove = boardSquareMatrix[newRow][newColumn];
+            potentialMove.classList.add("clickable-square");
+            potentialMove.textContent = symbol;
+        }
+
+        
+
+ 
+            }
+
+          
+        }
+        
+        generatePotentialMoves(activeRow, activeColumn, "P");
+    }
+
+    clearPreviousMove()
+    {
+        for (let i = 0; i < boardSquareMatrix.length; i++)
+        {
+            for (let j = 0; j <boardSquareMatrix[i].length; j++)
+            {
+                boardSquareMatrix[i][j].textContent = "";
+                boardSquareMatrix[i][j].classList.remove("clickable-square");
+            }
+        }
     }
 
     
@@ -93,5 +156,7 @@ console.log(boardSquareMatrix);
 
 const newKnight = new Knight();
 newKnight.moveKnight(3,3);
+
+
 
 
