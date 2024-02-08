@@ -25,9 +25,23 @@ const boardSquareMatrix = [
 const board = document.getElementById("board-container");
 const squareWhite = document.createElement("div");
 const squareBlack = document.createElement("div");
+let goalFound = false;
+
+const allSquares =[
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+];
+
+let possibleSquares = [];
 
 
-class BoardRow
+class Board
 {
     constructor()
     {
@@ -39,6 +53,7 @@ class BoardRow
                 this.generateRow(["black", "white", "black", "white", "black", "white", "black", "white"], 5);
                 this.generateRow(["white", "black", "white", "black", "white", "black", "white", "black"], 6);
                 this.generateRow(["black", "white", "black", "white", "black", "white", "black", "white"], 7);   
+                console.log(allSquares);
     }
 
     generateRow(arrayOfColors, rowNum)
@@ -46,12 +61,14 @@ class BoardRow
         const boardRowContainer = document.createElement("div");
         boardRowContainer.classList.add("board-row-container")
 
+
         for (let i = 0; i < boardMatrix[0].length; i++)
         {
             const square = document.createElement("div");
             square.classList.add("board-square");
             square.classList.add(arrayOfColors[i]);
-            
+            const squareClass = new SquareCl(square, null, null, rowNum, i);
+            allSquares[rowNum].push(squareClass);      
 
             boardRowContainer.appendChild(square);
             boardSquareMatrix[rowNum].push(square);
@@ -71,20 +88,36 @@ class BoardRow
 
     }
 
+    setGoal(rowNum, columnNum)
+    {
+        
+        const goalSquare = boardSquareMatrix[rowNum][columnNum];
+        console.log(goalSquare);
+        goalSquare.classList.add("goal");
+    }
+
+}
+
+class SquareCl
+{
+    constructor(val, next, possibleMove, row, column)
+    {
+        this.val = val;
+        this.next = next;
+        this.possibleMove = possibleMove;
+        this.row = row;
+        this.column = column;
+    }
 }
 
 class Knight
 {
-    constructor(currentPosition)
+    constructor()
     {
         this.knight = document.createElement("div");
         this.knight.classList.add("knight");
     }
 
-    generateKnight()
-    {
-        
-    }
 
     moveKnight(activeRow, activeColumn)
     {
@@ -94,10 +127,17 @@ class Knight
         console.log(activeParentSquare);
         activeParentSquare.appendChild(this.knight);
 
+        if (activeParentSquare.classList.contains("goal"))
+        {
+            activeParentSquare.classList.remove("goal");
+            newBoard.setGoal((Math.floor(Math.random() * boardSquareMatrix.length)) ,(Math.floor(Math.random() * boardSquareMatrix.length)));
+        }
+
         function generatePotentialMoves(row, column, symbol)
         {
 
-                
+            possibleSquares = [];
+
             const knightMoveSet = [
                 [row + 2, column + 1],
                 [row + 1, column + 2],
@@ -111,6 +151,7 @@ class Knight
             ];
 
 
+
             for (let i = 0; i < knightMoveSet.length; i++)
             {
                 const move = knightMoveSet[i];
@@ -118,22 +159,44 @@ class Knight
                 const newColumn = move[1];
 
                 if (newRow >= 0 && newRow < boardSquareMatrix.length &&
-            newColumn >= 0 && newColumn < boardSquareMatrix[newRow].length) {
-            
-            const potentialMove = boardSquareMatrix[newRow][newColumn];
-            potentialMove.classList.add("clickable-square");
-            potentialMove.textContent = symbol;
-        }
+                newColumn >= 0 && newColumn < boardSquareMatrix[newRow].length)
+                {
+                
+                    const potentialMove = boardSquareMatrix[newRow][newColumn];
+         
 
-        
+                    potentialMove.classList.add("clickable-square");
+                    potentialMove.textContent = symbol;
 
- 
+                    if (potentialMove.textContent === symbol)
+                    {
+                        allSquares[newRow][newColumn].possibleMove = "possible";
+                        possibleSquares.push(allSquares[newRow][newColumn]);
+                    }
+
+                    if (potentialMove.classList.contains("goal"))
+                    {
+                        console.log("GOAL FOUND!");
+                        goalFound = true;
+                    }
+                    
+
+                    
+                    
+                }
+
+
             }
+
+            
+            
 
           
         }
         
         generatePotentialMoves(activeRow, activeColumn, "P");
+
+
     }
 
     clearPreviousMove()
@@ -151,11 +214,13 @@ class Knight
     
 }
 
-const newBoardRow = new BoardRow();
-console.log(boardSquareMatrix);
+const newBoard = new Board();
+
 
 const newKnight = new Knight();
+
 newKnight.moveKnight(3,3);
+newBoard.setGoal((Math.floor(Math.random() * boardSquareMatrix.length)) ,(Math.floor(Math.random() * boardSquareMatrix.length)));
 
 
 

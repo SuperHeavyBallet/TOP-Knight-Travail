@@ -39,6 +39,12 @@
     z-index: 99;
 }
 
+.goal{
+
+    background-color: green;
+    color: white;
+}
+
 .clickable-square{
     cursor: pointer;
 }
