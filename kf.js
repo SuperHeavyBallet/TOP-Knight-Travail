@@ -1,5 +1,3 @@
-console.log("Hello World!");
-
 const boardMatrix = [
     [0,0,0,0,0,0,0,0], //0
     [0,0,0,0,0,0,0,0], //1
@@ -53,7 +51,6 @@ class Board
                 this.generateRow(["black", "white", "black", "white", "black", "white", "black", "white"], 5);
                 this.generateRow(["white", "black", "white", "black", "white", "black", "white", "black"], 6);
                 this.generateRow(["black", "white", "black", "white", "black", "white", "black", "white"], 7);   
-                console.log(allSquares);
     }
 
     generateRow(arrayOfColors, rowNum)
@@ -67,7 +64,7 @@ class Board
             const square = document.createElement("div");
             square.classList.add("board-square");
             square.classList.add(arrayOfColors[i]);
-            const squareClass = new SquareCl(square, null, null, rowNum, i);
+            const squareClass = new SquareCl(square, null, rowNum, i);
             allSquares[rowNum].push(squareClass);      
 
             boardRowContainer.appendChild(square);
@@ -77,14 +74,17 @@ class Board
             {
                 if (square.textContent === "P")
                 {
-                    console.log("Clicked: ", square);
+                    console.log("Clicked: ", square , "at" , allSquares[rowNum]);
                     newKnight.moveKnight(rowNum, i);
                 }
                 
             })
+
+            generatePossibleMoves([squareClass.row,squareClass.column])
         }
 
         board.appendChild(boardRowContainer);
+        //console.log( allSquares);
 
     }
 
@@ -92,21 +92,66 @@ class Board
     {
         
         const goalSquare = boardSquareMatrix[rowNum][columnNum];
-        console.log(goalSquare);
         goalSquare.classList.add("goal");
     }
 
 }
 
+function generatePossibleMoves(squarePosition)
+{
+    const squareRow = squarePosition[0];
+    const squareColumn = squarePosition[1];
+    
+    const nextPossibleMoves = allSquares[squareRow][squareColumn].nextPossibleMoves;
+
+    console.log("SqPos: ", squareRow, squareColumn);
+    console.log("Sq: ", allSquares[squareRow][squareColumn]);
+    console.log("Next: ", nextPossibleMoves);
+
+    for (let i = 0; i < nextPossibleMoves.length; i++)
+    {
+        if (nextPossibleMoves[i].length > 0)
+        {
+            const nextMoveRow = nextPossibleMoves[i][0];
+            const nextMoveColumns = nextPossibleMoves[i][1];
+            console.log(`Row ${nextMoveRow}: ` ,nextMoveColumns);
+
+            console.log(nextMoveRow , nextMoveColumns[0]);
+            console.log(nextMoveRow , nextMoveColumns[1]);
+
+            
+      
+            
+
+        }
+
+    }
+
+    console.log("____________");
+
+    
+}
+
+
 class SquareCl
 {
-    constructor(val, next, possibleMove, row, column)
+    constructor(val, possibleMove, row, column)
     {
         this.val = val;
-        this.next = next;
-        this.possibleMove = possibleMove;
         this.row = row;
         this.column = column;
+        this.nextPossibleMoves = [
+            [],
+            [[row-2], [column -1, column + 1]],
+            [[row-1], [column -2, column + 2]],
+            [],
+            [[row+1], [column -2, column + 2]],
+            [[row+2], [column -1, column + 1]],
+            [],
+            []
+        ];
+        this.possibleMove = possibleMove;
+        
     }
 }
 
@@ -115,7 +160,7 @@ class Knight
     constructor()
     {
         this.knight = document.createElement("div");
-        this.knight.classList.add("knight");
+
     }
 
 
@@ -124,7 +169,7 @@ class Knight
         this.clearPreviousMove();
 
         const activeParentSquare = boardSquareMatrix[activeRow][activeColumn];
-        console.log(activeParentSquare);
+        activeParentSquare.classList.add("knight");
         activeParentSquare.appendChild(this.knight);
 
         if (activeParentSquare.classList.contains("goal"))
@@ -164,21 +209,28 @@ class Knight
                 
                     const potentialMove = boardSquareMatrix[newRow][newColumn];
          
-
-                    potentialMove.classList.add("clickable-square");
-                    potentialMove.textContent = symbol;
-
-                    if (potentialMove.textContent === symbol)
+                    if (!potentialMove.classList.contains("knight"))
                     {
-                        allSquares[newRow][newColumn].possibleMove = "possible";
-                        possibleSquares.push(allSquares[newRow][newColumn]);
-                    }
+                        potentialMove.classList.add("clickable-square");
+                        potentialMove.textContent = symbol;
 
-                    if (potentialMove.classList.contains("goal"))
-                    {
-                        console.log("GOAL FOUND!");
-                        goalFound = true;
+                        if (potentialMove.textContent === symbol)
+                        {
+                            allSquares[newRow][newColumn].possibleMove = "possible";
+                            possibleSquares.push(allSquares[newRow][newColumn]);
+                        }
+
+                        if (potentialMove.classList.contains("goal"))
+                        {
+                            console.log("GOAL FOUND!");
+                            goalFound = true;
+                        }
+
+
                     }
+                   
+
+                    
                     
 
                     
@@ -195,6 +247,21 @@ class Knight
         }
         
         generatePotentialMoves(activeRow, activeColumn, "P");
+        
+
+
+        for (let i = 0; i < allSquares.length; i++)
+        {
+            for (let j = 0; j <allSquares[i].length; j++)
+            {
+
+                const thisSquare = allSquares[i][j];
+
+            }
+        }
+     
+
+
 
 
     }
@@ -207,6 +274,7 @@ class Knight
             {
                 boardSquareMatrix[i][j].textContent = "";
                 boardSquareMatrix[i][j].classList.remove("clickable-square");
+                boardSquareMatrix[i][j].classList.remove("knight");
             }
         }
     }
