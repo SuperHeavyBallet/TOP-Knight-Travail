@@ -255,7 +255,7 @@ function generateRandomSquare()
     return position;
 }
 
-function reRollBoard()
+function reRollBoard(startRow, startCol,goalRow, goalCol)
 {
     for (let i = 0; i < boardSquares.length; i++)
     {
@@ -274,11 +274,11 @@ function reRollBoard()
     const startPos = generateRandomSquare();
     const goalPos = generateRandomSquare();
 
-    const start = boardSquares[startPos[0]][startPos[1]]; // Starting Square
+    const start = boardSquares[startRow][startCol]; // Starting Square
     start.square.classList.add("knight");
     start.setPossibleMoves();
 
-    const goal = boardSquares[goalPos[0]][goalPos[1]]; // Goal square
+    const goal = boardSquares[goalRow][goalCol]; // Goal square
     goal.square.classList.add("goal");
     const shortestPath = findShortestPath(start, goal);
 
@@ -288,7 +288,32 @@ function reRollBoard()
     }
     console.log(shortestPath);
 
+    const shortestPathArray = [];
+
+    for (let i = 0; i < shortestPath.length; i++)
+    {
+        const pos = []
+        pos.push(shortestPath[i].row);
+        pos.push(shortestPath[i].column);
+        shortestPathArray.push(pos);
+    }
+
+    return shortestPathArray;
+
 }
 
-reRollBoard();
+
+
+function knightMoves(startRow, startCol,goalRow, goalCol)
+{
+    return reRollBoard(startRow, startCol,goalRow, goalCol);
+}
+
+const shortKnightPath = knightMoves(0,0,7,6);
+console.log(`You Made it in ${shortKnightPath.length} moves!`);
+console.log(`Here's your path: `);
+for (let i = 0; i < shortKnightPath.length; i ++)
+{
+    console.log(shortKnightPath[i]);
+}
 
