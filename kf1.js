@@ -28,6 +28,16 @@ class BoardSquare
         this.square.addEventListener("click", () =>
         {
 
+            for (let i = 0; i < boardSquares.length; i++)
+            {
+                for (let j = 0; j < boardSquares[i].length; j++)
+                {
+                    boardSquares[i][j].square.classList.remove("clickable-square");
+
+                    
+                }
+            }
+
             if (this.square.textContent === "P")
             {
 
@@ -43,8 +53,14 @@ class BoardSquare
 
                 this.setPossibleMoves();
                 this.square.classList.add("knight");
-                }
+            }
+
+            if (this.square.classList.contains("goal"))
+            {
+                reRollBoard();
+            }
         });
+
 
 
     }
@@ -53,7 +69,15 @@ class BoardSquare
 
     setPossibleMoves()
     {
-        const thisRoundPosMoves = [];
+
+        for (let i = 0; i < boardSquares.length; i++)
+            {
+                for (let j = 0; j < boardSquares[i].length; j++)
+                {
+                    boardSquares[i][j].square.textContent = "";
+                    
+                }
+            }
 
         console.log(this.nextMoves);
         console.log(this.nextMoves[0]);
@@ -76,7 +100,7 @@ class BoardSquare
                     if (boardSquares[nextMoveRow][nextMoveCol])
                     {
                         const nextMovePos = boardSquares[nextMoveRow][nextMoveCol];
-                        thisRoundPosMoves.push(nextMovePos);
+
                         nextMovePos.square.textContent = "P";
                         nextMovePos.square.classList.add("clickable-square");
 
@@ -84,10 +108,7 @@ class BoardSquare
                         {
                             console.log("Found Goal!");
                         }
-                        else
-                        {
 
-                        }
                     }
               
                    
@@ -98,12 +119,6 @@ class BoardSquare
             }
         }
 
-        console.log(thisRoundPosMoves);
-
-        for (let i = 0; i < thisRoundPosMoves.length; i++)
-        {
-           // thisRoundPosMoves[i].setPossibleMoves();
-        }
 
     }
     
@@ -232,14 +247,48 @@ function getKnightsMoves(square)
     return moves.filter(move => !move.visited); // Filter out visited moves
 }
 
-const start = boardSquares[0][0]; // Starting Square
-start.square.classList.add("knight");
-const goal = boardSquares[7][7]; // Goal square
-goal.square.classList.add("goal");
-const shortestPath = findShortestPath(start, goal);
-
-for (let i = 0; i < shortestPath.length; i++)
+function generateRandomSquare()
 {
-    shortestPath[i].square.classList.add("short-path");
+    const row = Math.floor(Math.random() * numOfRows);
+    const column = Math.floor(Math.random() * numOfColumns);
+    const position = [row,column];
+    return position;
 }
-console.log(shortestPath);
+
+function reRollBoard()
+{
+    for (let i = 0; i < boardSquares.length; i++)
+    {
+        for (let j = 0; j < boardSquares[i].length; j++)
+        {
+
+            boardSquares[i][j].square.classList.remove("short-path");
+            boardSquares[i][j].square.classList.remove("knight");
+            boardSquares[i][j].square.classList.remove("goal");
+            boardSquares[i][j].square.classList.remove("clickable-square");
+       
+            
+        }
+    }
+
+    const startPos = generateRandomSquare();
+    const goalPos = generateRandomSquare();
+
+    const start = boardSquares[startPos[0]][startPos[1]]; // Starting Square
+    start.square.classList.add("knight");
+    start.setPossibleMoves();
+
+    const goal = boardSquares[goalPos[0]][goalPos[1]]; // Goal square
+    goal.square.classList.add("goal");
+    const shortestPath = findShortestPath(start, goal);
+
+    for (let i = 0; i < shortestPath.length; i++)
+    {
+        shortestPath[i].square.classList.add("short-path");
+    }
+    console.log(shortestPath);
+
+}
+
+reRollBoard();
+
