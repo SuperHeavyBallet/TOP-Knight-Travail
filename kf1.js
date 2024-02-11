@@ -271,8 +271,16 @@ function reRollBoard(startRow, startCol,goalRow, goalCol)
         }
     }
 
-    const startPos = generateRandomSquare();
-    const goalPos = generateRandomSquare();
+    if (!startRow)
+    {
+        const startPos = generateRandomSquare();
+        startRow = startPos[0];
+        startCol = startPos[1];
+
+        const goalPos = generateRandomSquare();
+        goalRow = goalPos[0];
+        goalCol = goalPos[1];
+    }
 
     const start = boardSquares[startRow][startCol]; // Starting Square
     start.square.classList.add("knight");
